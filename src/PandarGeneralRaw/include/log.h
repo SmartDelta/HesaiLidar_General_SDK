@@ -14,33 +14,47 @@
  * limitations under the License.
  *****************************************************************************/
 
+#ifndef HGUARD_PANDAR_LOG
+#define HGUARD_PANDAR_LOG
+
 #include <stdio.h>
-#include <unistd.h>
 #include <thread>
-#include <sys/time.h>
-#include <sys/timeb.h>
+#include <chrono>
+#include <ctime>
 
 class TranceFunc
 {
+
+private:
+
+    const char* m_cFile = nullptr;
+    const char* m_cFunc = nullptr;
+
+    static void getUnixSecsAndMillis(time_t& time, int& millis) {
+        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+        auto time_since_epoch = now.time_since_epoch();
+        time = std::chrono::system_clock::to_time_t(now);
+        millis = std::chrono::duration_cast<std::chrono::milliseconds>(time_since_epoch).count() % 1000;
+    }
+
+    void writeLog() {
+        time_t t{};
+        int millis{};
+        getUnixSecsAndMillis(t, millis);
+        struct tm* ptm = localtime(&t);
+        printf("[T] %02d:%02d:%02d.%03d pid:%d tid:%10d ->[File:%s Function:%s ]\n", ptm->tm_hour, ptm->tm_min, ptm->tm_sec, millis, getpid(), std::hash<std::thread::id>()(std::this_thread::get_id()), m_cFile, m_cFunc);
+    }
+
 public:
+    
     TranceFunc(const char* file, const char* func){
         m_cFile = file;
         m_cFunc = func;
-        struct tm *ptm;
-        struct timeb stTimeb;
-        ftime(&stTimeb);
-        ptm = localtime(&stTimeb.time);
-        printf("[T] %02d:%02d:%02d.%03d pid:%d tid:%10d ->[File:%s Function:%s ]\n", ptm->tm_hour, ptm->tm_min, ptm->tm_sec, stTimeb.millitm, getpid(), std::hash<std::thread::id>()(std::this_thread::get_id()), m_cFile, m_cFunc);
+        writeLog();
     }
-    ~TranceFunc(){
-        struct tm *ptm;
-        struct timeb stTimeb;
-        ftime(&stTimeb);
-        ptm = localtime(&stTimeb.time);
-        printf("[T] %02d:%02d:%02d.%03d pid:%d tid:%10d <-[File:%s Function:%s ]\n", ptm->tm_hour, ptm->tm_min, ptm->tm_sec, stTimeb.millitm, getpid(), std::hash<std::thread::id>()(std::this_thread::get_id()), m_cFile, m_cFunc);
-    }
-    const char* m_cFile;
-    const char* m_cFunc;
+
+    ~TranceFunc() { writeLog(); }
+
 };
 
 #define LOG_D(format,...) {\
@@ -61,3 +75,4 @@ public:
 
 #define LOG_FUNC() TranceFunc tf( __FILE__, __FUNCTION__)
     
+#endif

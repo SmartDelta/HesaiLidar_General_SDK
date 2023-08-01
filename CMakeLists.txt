@@ -3,6 +3,9 @@ project(PandarGeneralSDK)
 
 find_package( Boost REQUIRED  COMPONENTS thread)
 find_package( PCL REQUIRED COMPONENTS common )
+find_package( PkgConfig REQUIRED )
+
+pkg_check_modules( PCAP REQUIRED libpcap )
 
 # set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
 ADD_COMPILE_OPTIONS(-std=c++11 )
@@ -23,7 +26,14 @@ target_link_libraries(${PROJECT_NAME}
     ${Boost_LIBRARIES}
     ${PCL_IO_LIBRARIES}
     Boost::thread
-    pcap
+    ${PCAP_LIBRARIES}
+)
+
+target_link_directories(${PROJECT_NAME}
+    PUBLIC
+    ${Boost_LIBRARY_DIRS}
+    ${PCL_IO_LIBRARY_DIRS}
+    ${PCAP_LIBRARY_DIRS}
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -33,6 +43,7 @@ target_include_directories(${PROJECT_NAME}
     src/PandarGeneralRaw/include
     ${Boost_INCLUDE_DIRS}
     ${PCL_INCLUDE_DIRS}
+    ${PCAP_INCLUDE_DIRS}
 )
 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
