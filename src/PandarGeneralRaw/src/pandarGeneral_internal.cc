@@ -675,7 +675,7 @@ void PandarGeneral_Internal::Start() {
     lidar_recv_thr_ =
         new boost::thread(boost::bind(&PandarGeneral_Internal::RecvTask, this));
   } else {
-    pcap_reader_->start(boost::bind(&PandarGeneral_Internal::FillPacket, this, _1, _2, _3));
+    pcap_reader_->start(boost::bind(&PandarGeneral_Internal::FillPacket, this, boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3));
   }
 
   if(0 != m_u16LidarAlgorithmPort) {
