@@ -7,8 +7,15 @@ find_package(PCL REQUIRED COMPONENTS common)
 
 set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
 
+add_library( ${PROJECT_NAME}
+	src/input.cc
+	src/pandarGeneral_internal.cc
+	src/pandarGeneral.cc
+    src/pcap_reader.cpp
+)
 
-include_directories(
+target_include_directories(${PROJECT_NAME}
+	PUBLIC
 	.
 	include
 	include/pandarGeneral
@@ -16,20 +23,8 @@ include_directories(
 	${PCL_INCLUDE_DIRS}
 )
 
-
-add_library( ${PROJECT_NAME}
-	src/input.cc
-	src/pandarGeneral_internal.cc
-	src/pandarGeneral.cc
-        src/pcap_reader.cpp
-)
-
 target_link_libraries(${PROJECT_NAME}
+		PUBLIC
 		${Boost_LIBRARIES}
 		${PCL_IO_LIBRARIES}
 )
-
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-
-endif(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-

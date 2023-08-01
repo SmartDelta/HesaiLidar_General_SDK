@@ -8,16 +8,7 @@ find_package( PCL REQUIRED COMPONENTS common )
 ADD_COMPILE_OPTIONS(-std=c++11 )
 ADD_COMPILE_OPTIONS(-std=c++14 )
 
-
 add_subdirectory(src/PandarGeneralRaw)
-
-include_directories(
-    .
-    include
-    src/PandarGeneralRaw/include
-    ${Boost_INCLUDE_DIRS}
-    ${PCL_INCLUDE_DIRS}
-)
 
 add_library( ${PROJECT_NAME} SHARED
     src/pandarGeneral_sdk.cc
@@ -26,12 +17,22 @@ add_library( ${PROJECT_NAME} SHARED
     src/wrapper.cc
 )
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(${PROJECT_NAME}
+	PUBLIC
     PandarGeneral
     ${Boost_LIBRARIES}
     ${PCL_IO_LIBRARIES}
     Boost::thread
     pcap
+)
+
+target_include_directories(${PROJECT_NAME}
+	PUBLIC
+	.
+    include
+    src/PandarGeneralRaw/include
+    ${Boost_INCLUDE_DIRS}
+    ${PCL_INCLUDE_DIRS}
 )
 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
