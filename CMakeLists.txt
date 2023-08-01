@@ -4,6 +4,7 @@ project(PandarGeneralSDK)
 find_package( Boost REQUIRED  COMPONENTS thread)
 find_package( PCL REQUIRED COMPONENTS common )
 find_package( PkgConfig REQUIRED )
+find_package( yaml-cpp REQUIRED )
 
 pkg_check_modules( PCAP REQUIRED libpcap )
 
@@ -27,6 +28,7 @@ target_link_libraries(${PROJECT_NAME}
     ${PCL_IO_LIBRARIES}
     Boost::thread
     ${PCAP_LIBRARIES}
+    yaml-cpp
 )
 
 target_link_directories(${PROJECT_NAME}
@@ -34,6 +36,7 @@ target_link_directories(${PROJECT_NAME}
     ${Boost_LIBRARY_DIRS}
     ${PCL_IO_LIBRARY_DIRS}
     ${PCAP_LIBRARY_DIRS}
+    yaml-cpp
 )
 
 target_include_directories(${PROJECT_NAME}
