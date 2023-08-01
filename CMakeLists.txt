@@ -9,8 +9,8 @@ find_package( yaml-cpp REQUIRED )
 pkg_check_modules( PCAP REQUIRED libpcap )
 
 # set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
-ADD_COMPILE_OPTIONS(-std=c++11 )
-ADD_COMPILE_OPTIONS(-std=c++14 )
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "-fPIC --std=c++14")
 
 add_subdirectory(src/PandarGeneralRaw)
 
