@@ -3,6 +3,7 @@ project(PandarGeneral)
 
 
 find_package( Boost REQUIRED )
+find_package( Eigen3 CONFIG REQUIRED )
 find_package(PCL REQUIRED COMPONENTS common)
 
 set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
@@ -21,10 +22,18 @@ target_include_directories(${PROJECT_NAME}
 	include/pandarGeneral
 	${Boost_INCLUDE_DIRS}
 	${PCL_INCLUDE_DIRS}
+        Eigen3::Eigen
 )
 
 target_link_libraries(${PROJECT_NAME}
 		PUBLIC
 		${Boost_LIBRARIES}
 		${PCL_IO_LIBRARIES}
+		Eigen3::Eigen
+)
+
+target_link_directories(${PROJECT_NAME}
+                PUBLIC
+                ${Boost_LIBRARY_DIRS}
+                ${PCL_IO_LIBRARY_DIRS}
 )
