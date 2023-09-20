@@ -14,7 +14,7 @@ set(CMAKE_CXX_FLAGS "-fPIC --std=c++14")
 
 add_subdirectory(src/PandarGeneralRaw)
 
-add_library( ${PROJECT_NAME}
+add_library( ${PROJECT_NAME} SHARED
     src/pandarGeneral_sdk.cc
     src/tcp_command_client.c
     src/util.c
@@ -63,3 +63,4 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
     )
 endif(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
 
+install(TARGETS ${PROJECT_NAME})

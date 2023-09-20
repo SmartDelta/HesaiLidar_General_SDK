@@ -37,3 +37,5 @@ target_link_directories(${PROJECT_NAME}
                 ${Boost_LIBRARY_DIRS}
                 ${PCL_IO_LIBRARY_DIRS}
 )
+
+install(TARGETS ${PROJECT_NAME})
