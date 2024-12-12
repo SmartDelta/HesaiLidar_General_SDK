@@ -1,8 +1,10 @@
-#include <time.h>
 #include "pcap_reader.h"
 #include "log.h"
-#include <map>
 #include "../util.h"
+
+#include <map>
+#include <chrono>
+#include <time.h>
 
 #define IPV4_PKT_HEADER_SIZE (42)
 #define IPV6_PKT_HEADER_SIZE (62)
@@ -142,9 +144,9 @@ void PcapReader::parsePcap() {
           (packet[m_iTsIndex+1]& 0xff) << 8 | \
           ((packet[m_iTsIndex+2]& 0xff) << 16) | \
           ((packet[m_iTsIndex+3]& 0xff) << 24));
-      struct timeval sys_time;
-      gettimeofday(&sys_time, NULL);
-      current_time = sys_time.tv_sec * 1000000 + sys_time.tv_usec;
+      std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+      std::chrono::microseconds epoch_micros = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch());
+      current_time = epoch_micros.count();
 
       if (0 == last_pkt_ts) {
         last_pkt_ts = pkt_ts;
