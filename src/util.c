@@ -25,6 +25,8 @@
 #include <string.h>
 #include <sys/types.h>
 
+#include "sys_inc.h"
+
 #include "src/util.h"
 
 #define DEFAULT_TIMEOUT 10 /*secondes waitting for read/write*/

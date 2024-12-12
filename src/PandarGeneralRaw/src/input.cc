@@ -26,6 +26,8 @@
 #include <errno.h>
 #include <string.h>
 
+#include "sys_inc.h"
+
 #include "input.h"
 #include "log.h"
 
