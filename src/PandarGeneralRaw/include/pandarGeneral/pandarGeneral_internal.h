@@ -22,6 +22,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+#include <thread>
 #include <list>
 #include <string>
 
@@ -365,9 +366,10 @@ typedef struct PacketsBuffer_s {
     if(((m_iterPush - m_iterCalc) > MAX_ITERATOR_DIFF) ||
     ((m_iterPush < m_iterCalc) && (m_iterCalc - m_iterPush) < m_buffers.size() - MAX_ITERATOR_DIFF)){
 
-      while((((m_iterPush - m_iterCalc) > MAX_ITERATOR_DIFF) ||
-      ((m_iterPush < m_iterCalc) && (m_iterCalc - m_iterPush) < m_buffers.size() - MAX_ITERATOR_DIFF)))
-        usleep(1000);
+        while ((((m_iterPush - m_iterCalc) > MAX_ITERATOR_DIFF) ||
+            ((m_iterPush < m_iterCalc) && (m_iterCalc - m_iterPush) < m_buffers.size() - MAX_ITERATOR_DIFF)))
+            std::this_thread::sleep_for(std::chrono::microseconds(1000));
+          //usleep(1000);
     }
 
     if (m_buffers.end() == m_iterPush) {

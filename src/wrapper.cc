@@ -3,6 +3,7 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <iostream>
+#include <thread>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -75,7 +76,7 @@ void RunPcapPandarGeneralSDK(char* correctionFile, char* pcapFile, char* lidarTy
         }
     }
     pandarGeneral.Start();
-    sleep(runTime);
+    std::this_thread::sleep_for(std::chrono::seconds(runTime));
     return;
 }
 
@@ -84,7 +85,7 @@ void RunLidarPandarGeneralSDK(char* deviceipaddr, int lidarport, int gpsport, ch
     PandarGeneralSDK pandarGeneral(deviceipaddr, lidarport, 0, gpsport, \
       lidarCallback, lidarAlgorithmCallback, gpsCallback, 0, 0, 1, lidarType, std::string("frame_id"), timestampType, correctionfile, multiCastIp, false);
     pandarGeneral.Start();
-    sleep(runTime);
+    std::this_thread::sleep_for(std::chrono::seconds(runTime));
     return;
 }
 

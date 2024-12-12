@@ -14,10 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <netinet/in.h>
 #include <pthread.h>
 #include <setjmp.h>
 #include <signal.h>
@@ -25,15 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
-#include <sys/socket.h>
 #include <sys/types.h>
-#include <syslog.h>
-#include <unistd.h>
-#include <linux/sockios.h>
-#include <net/if.h>
-#include <sys/ioctl.h>
 #include "src/util.h"
 #include "src/tcp_command_client.h"
 

@@ -14,14 +14,9 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <poll.h>
 #include <string.h>
-#include <sys/file.h>
-#include <sys/socket.h>
-#include <sys/time.h>
 #include <iostream>
 #include <sstream>
 #include <time.h>
@@ -30,7 +25,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "input.h"
 #include "log.h"

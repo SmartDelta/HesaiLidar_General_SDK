@@ -17,9 +17,7 @@
 #ifndef SRC_INPUT_H_
 #define SRC_INPUT_H_
 
-#include <netinet/in.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <string>
 
 #define ETHERNET_MTU (1500)

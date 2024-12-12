@@ -15,6 +15,7 @@
  *****************************************************************************/
 
 #include <sstream>
+#include <thread>
 
 #include "input.h"
 #include "pandarGeneral_internal.h"
@@ -781,7 +782,7 @@ void PandarGeneral_Internal::ProcessLiarPacket() {
   while (enable_lidar_process_thr_) {
     boost::this_thread::interruption_point();
     if (!m_PacketsBuffer.hasEnoughPackets()) {
-      usleep(1000);
+        std::this_thread::sleep_for(std::chrono::microseconds(1000));
       continue;
     }
     PandarPacket packet = *(m_PacketsBuffer.getIterCalc());

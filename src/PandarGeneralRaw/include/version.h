@@ -18,7 +18,6 @@
 #define VERSION_H_
 
 #include <stdio.h>
-#include <unistd.h>
 #include <string>
 
 #define VERSION "PandarGeneralSDK_1.1.15"

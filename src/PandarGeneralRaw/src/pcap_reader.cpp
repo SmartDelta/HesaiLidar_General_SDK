@@ -1,8 +1,4 @@
-#include <sys/time.h>
-#include <sys/types.h>
 #include <time.h>
-#include <unistd.h>
-#include <arpa/inet.h>
 #include "pcap_reader.h"
 #include "log.h"
 #include <map>
