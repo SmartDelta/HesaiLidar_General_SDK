@@ -88,25 +88,21 @@ void PandarGeneral::Start() { internal_->Start(); }
 void PandarGeneral::Stop() { internal_->Stop(); }
 
 int PandarGeneral::getMajorVersion() {
-  if (internal_) {
-    internal_->getMajorVersion();
-  }
+  if (internal_)
+    return internal_->getMajorVersion();
 }
 
 int PandarGeneral::getMinorVersion() {
-  if (internal_) {
-    internal_->getMinorVersion();
-  }
+  if (internal_)
+    return internal_->getMinorVersion();
 }
 
 bool PandarGeneral::GetCorrectionFileFlag(){
-  if (internal_) {
+  if (internal_)
     return internal_->GetCorrectionFileFlag();
-  }
 }
 
 void PandarGeneral::SetCorrectionFileFlag(bool flag){
-  if (internal_) {
-    internal_->SetCorrectionFileFlag(flag);
-  }
+  if (internal_)
+    return internal_->SetCorrectionFileFlag(flag);
 }
