@@ -29,6 +29,8 @@
 
 #include "src/util.h"
 
+#include <chrono>
+
 #define DEFAULT_TIMEOUT 10 /*secondes waitting for read/write*/
 
 int sys_readn(int fd, void* vptr, int n) {
@@ -159,12 +161,9 @@ int select_fd(int fd, int timeout, int wait_for) {
   return result;
 }
 double getNowTimeSec() {
-   struct timespec ts;
-    double time;
-    if (clock_gettime(CLOCK_REALTIME, &ts) == 0) {
-      return ts.tv_nsec / 1000000000.0 + ts.tv_sec;
-    }
-    else{
-      return 0;
-    }  
+    std::chrono::system_clock::time_point time = std::chrono::system_clock::now();
+    std::chrono::nanoseconds nanos = std::chrono::duration_cast<std::chrono::nanoseconds>(time.time_since_epoch());
+    return (double)nanos.count() / 1E9;
+    //They used clock_gettime with CLOCK_REALTIME here. That would just be wall-clock, so system_clock
+    //On Windows that is not nanosecond-precise but I don't know if we can just swap this clock for a different clock or if its value is interpreted as unix time somewhere
 }

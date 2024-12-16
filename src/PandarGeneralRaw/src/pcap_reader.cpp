@@ -122,6 +122,8 @@ void PcapReader::parsePcap() {
       break;
     }
  
+    //Why pass this time to callback and not just the PCAP timestamp?
+    //There also is another, different, timestamp below. What is that for then?
     double time = getNowTimeSec();
     // printf("Real time: %lf\n",time);
     callback(packet, pktSize, time);

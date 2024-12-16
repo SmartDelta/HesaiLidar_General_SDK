@@ -88,8 +88,6 @@ PandarGeneral_Internal::PandarGeneral_Internal(
     int pcl_type, std::string lidar_type, std::string frame_id, std::string timestampType,
     std::string lidar_correction_file, std::string multicast_ip, bool coordinate_correction_flag) {
       // LOG_FUNC();
-  pthread_mutex_init(&lidar_lock_, NULL);
-  sem_init(&lidar_sem_, 0, 0);
 
   lidar_recv_thr_ = NULL;
   lidar_process_thr_ = NULL;
@@ -113,8 +111,6 @@ PandarGeneral_Internal::PandarGeneral_Internal(
   m_sTimestampType = timestampType;
   m_dPktTimestamp = 0.0f;
 
-  pthread_mutex_init(&m_mutexAlgorithmListLock, NULL);
-  sem_init(&m_semAlgorithmList, 0, 0);
   m_threadLidarAlgorithmRecv = NULL;
   m_threadLidarAlgorithmProcess = NULL;
   m_fAlgorithmCallback = NULL;
@@ -144,8 +140,6 @@ PandarGeneral_Internal::PandarGeneral_Internal(std::string pcap_path, \
     pcl_callback, uint16_t start_angle, int tz, int pcl_type, \
     std::string lidar_type, std::string frame_id, \
     std::string timestampType, bool coordinate_correction_flag) {
-  pthread_mutex_init(&lidar_lock_, NULL);
-  sem_init(&lidar_sem_, 0, 0);
 
   lidar_recv_thr_ = NULL;
   lidar_process_thr_ = NULL;
@@ -175,8 +169,6 @@ PandarGeneral_Internal::PandarGeneral_Internal(std::string pcap_path, \
 
 PandarGeneral_Internal::~PandarGeneral_Internal() {
   Stop();
-  sem_destroy(&lidar_sem_);
-  pthread_mutex_destroy(&lidar_lock_);
 
   if (pcap_reader_ != NULL) {
     delete pcap_reader_;
@@ -1942,26 +1934,17 @@ void PandarGeneral_Internal::initOffsetByProtocolVersion() {
 }
 
 void PandarGeneral_Internal::pushAlgorithmData(PandarPacket packet) {
-    pthread_mutex_lock(&m_mutexAlgorithmListLock);
+    unique_lock<mutex> lock(this->mtx_algorithm);
     m_listAlgorithmPacket.push_back(packet);
-    sem_post(&m_semAlgorithmList);
-    pthread_mutex_unlock(&m_mutexAlgorithmListLock);
+    this->cvar_algorithm.notify_all();
 }
 
 int PandarGeneral_Internal::popAlgorithmData(PandarPacket *packet) {
-    struct timespec ts;
-    if(clock_gettime(CLOCK_REALTIME, &ts) == -1) {
-        printf("get time error\n");
+    unique_lock<mutex> lock(this->mtx_algorithm);
+    if (this->cvar_algorithm.wait_for(lock, std::chrono::seconds(1)) == std::cv_status::timeout)
         return -1;
-    }
-    ts.tv_sec += 1;
-    if(sem_timedwait(&m_semAlgorithmList, &ts) == -1) {
-        return -1;
-    }
-    pthread_mutex_lock(&m_mutexAlgorithmListLock);
     *packet = m_listAlgorithmPacket.front();
     m_listAlgorithmPacket.pop_front();
-    pthread_mutex_unlock(&m_mutexAlgorithmListLock);
     return 0;
 }
 

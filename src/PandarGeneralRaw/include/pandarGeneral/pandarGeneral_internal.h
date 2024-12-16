@@ -25,6 +25,9 @@
 #include <thread>
 #include <list>
 #include <string>
+#include <chrono>
+#include <mutex>
+#include <condition_variable>
 
 #include <boost/function.hpp>
 
@@ -532,8 +535,6 @@ class PandarGeneral_Internal {
 
   void EmitBackMessege(char chLaserNumber, boost::shared_ptr<PPointCloud> cld);
   void SetEnvironmentVariableTZ();
-  pthread_mutex_t lidar_lock_;
-  sem_t lidar_sem_;
   boost::thread *lidar_recv_thr_;
   boost::thread *lidar_process_thr_;
   bool enable_lidar_recv_thr_;
@@ -542,8 +543,8 @@ class PandarGeneral_Internal {
   std::string m_sTimestampType;
   double m_dPktTimestamp;
   uint16_t m_u16LidarAlgorithmPort;
-  pthread_mutex_t m_mutexAlgorithmListLock;
-  sem_t m_semAlgorithmList;
+  std::mutex mtx_algorithm;
+  std::condition_variable cvar_algorithm;
   boost::thread *m_threadLidarAlgorithmRecv;
   boost::thread *m_threadLidarAlgorithmProcess;
   bool m_bEnableLidarAlgorithmRecvThread;
