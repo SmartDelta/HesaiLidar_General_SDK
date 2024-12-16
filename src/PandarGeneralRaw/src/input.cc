@@ -32,7 +32,7 @@
 #include "log.h"
 
 #ifdef _WIN32
-
+#define poll WSAPoll
 #else
 #define closesocket close
 #endif
@@ -73,10 +73,20 @@ Input::Input(std::string deviceipaddr,uint16_t port, uint16_t gpsPort, std::stri
         printf("Recive data from multicast ip address %s\n", multicast_ip.c_str());
       }
     }
+
+#ifdef _WIN32
+    u_long one = 1;
+    if (ioctlsocket(socketForLidar, FIONBIO, &one) < 0) {
+        perror("non-block");
+        return;
+    }
+#else
     if (fcntl(socketForLidar, F_SETFL, O_NONBLOCK | FASYNC) < 0) {
       perror("non-block");
       return;
     }
+#endif
+
     if (port == gpsPort) {
       socketNumber = 1;
       return;
@@ -87,12 +97,6 @@ Input::Input(std::string deviceipaddr,uint16_t port, uint16_t gpsPort, std::stri
     if (socketForGPS == -1) {
       perror("socket");  // TODO(Philip.Pi): perror errno.
       return;
-    }
-
-    int reuse = 1;
-    int set_error = setsockopt(socketForGPS, SOL_SOCKET, SO_REUSEPORT, (const void *)&reuse, sizeof(int));
-    if(set_error < 0) {
-      perror("setsockopt");
     }
 
     sockaddr_in myAddressGPS;                        // my address information
@@ -134,10 +138,19 @@ Input::Input(std::string deviceipaddr,uint16_t port, uint16_t gpsPort, std::stri
       return;
     }
 
+#ifdef _WIN32
+    u_long one = 1;
+    if (ioctlsocket(socketForLidar, FIONBIO, &one) == SOCKET_ERROR) {
+        perror("non-block");
+        return;
+    }
+#else
     if (fcntl(socketForLidar, F_SETFL, O_NONBLOCK | FASYNC) < 0) {
       perror("non-block");
       return;
     }
+#endif
+
     if (port == gpsPort) {
       socketNumber = 1;
       return;
@@ -149,11 +162,6 @@ Input::Input(std::string deviceipaddr,uint16_t port, uint16_t gpsPort, std::stri
     if (socketForGPS == -1) {
       perror("socket");  // TODO(Philip.Pi): perror errno.
       return;
-    }
-    int reuse = 1;
-    int set_error = setsockopt(socketForGPS, SOL_SOCKET, SO_REUSEPORT, (const void *)&reuse, sizeof(int));
-    if(set_error < 0) {
-      perror("setsockopt");
     }
 
     sockaddr_in6 addrGPS;
@@ -193,10 +201,20 @@ Input::Input(std::string deviceipaddr,uint16_t port, uint16_t gpsPort, std::stri
     }
 	}
 
+#ifdef _WIN32
+    u_long one = 1;
+    if (ioctlsocket(socketForGPS, FIONBIO, &one) == SOCKET_ERROR) {
+        perror("non-block");
+        return;
+    }
+#else
   if (fcntl(socketForGPS, F_SETFL, O_NONBLOCK | FASYNC) < 0) {
     perror("non-block");
     return;
   }
+#endif
+
+
   socketNumber = 2;
 }
 
@@ -209,7 +227,7 @@ Input::~Input(void) {
 //          1 - gps
 //          -1 - error
 int Input::getPacket(PandarPacket *pkt) {
-  struct pollfd fds[socketNumber];
+  struct pollfd fds[2];
   if (socketNumber == 2) {
     fds[0].fd = socketForGPS;
     fds[0].events = POLLIN;
@@ -245,7 +263,7 @@ int Input::getPacket(PandarPacket *pkt) {
   // printf("Real time: %lf\n",time);
   for (int i = 0; i != socketNumber; ++i) {
     if (fds[i].revents & POLLIN) {
-      nbytes = recvfrom(fds[i].fd, &pkt->data[0], ETHERNET_MTU, 0,
+      nbytes = recvfrom(fds[i].fd, (char*)&pkt->data[0], ETHERNET_MTU, 0,
                         reinterpret_cast<sockaddr *>(&senderAddress),
                         &senderAddressLen);
       break;

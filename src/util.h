@@ -21,7 +21,7 @@
 extern "C" {
 #endif
 
-int sys_readn(int fd, void* vptr, int n);
+int net_readn(int fd, void* vptr, int n);
 int tcp_open(const char* ipaddr, int port);
 int select_fd(int fd, int timeout, int wait_for);
 double getNowTimeSec();

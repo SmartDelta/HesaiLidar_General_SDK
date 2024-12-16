@@ -71,13 +71,13 @@ static int tcpCommandReadCommand(int connfd, TC_Command* cmd) {
   }
   memset(cmd, 0, sizeof(TC_Command));
   unsigned char buffer[1500];
-  ret = sys_readn(connfd, buffer, 2);
+  ret = net_readn(connfd, buffer, 2);
   if (ret <= 0 || buffer[0] != 0x47 || buffer[1] != 0x74) {
     printf("Server Read failed\n");
     return -1;
   }
 
-  ret = sys_readn(connfd, buffer + 2, 6);
+  ret = net_readn(connfd, buffer + 2, 6);
   if (ret != 6) {
     printf("Server Read failed\n");
     return -1;
@@ -95,7 +95,7 @@ static int tcpCommandReadCommand(int connfd, TC_Command* cmd) {
     }
   }
 
-  ret = sys_readn(connfd, cmd->data, cmd->header.len);
+  ret = net_readn(connfd, cmd->data, cmd->header.len);
   if (ret != cmd->header.len) {
     free(cmd->data);
     printf("Server Read failed\n");

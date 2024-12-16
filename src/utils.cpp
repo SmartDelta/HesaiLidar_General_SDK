@@ -37,9 +37,12 @@
 #define closesocket close
 #endif
 
+// TODO: We cannot use errno on Windows to get WS errors
+// You'd need WSAGetLastError for that. But that's not on linux ofc
+
 #define DEFAULT_TIMEOUT 10 /*secondes waitting for read/write*/
 
-int sys_readn(int fd, void* vptr, int n) {
+int net_readn(int fd, void* vptr, int n) {
   // printf("start sys_readn: %d....\n", n);
   int nleft, nread;
   char* ptr;
@@ -48,7 +51,7 @@ int sys_readn(int fd, void* vptr, int n) {
   nleft = n;
   while (nleft > 0) {
     // printf("start read\n");
-    if ((nread = read(fd, ptr, nleft)) < 0) {
+    if ((nread = recv(fd, ptr, nleft, 0)) == SOCKET_ERROR) {
       if (errno == EINTR)
         nread = 0;
       else
