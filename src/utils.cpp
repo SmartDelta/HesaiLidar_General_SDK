@@ -65,28 +65,6 @@ int sys_readn(int fd, void* vptr, int n) {
   return n - nleft;
 }
 
-int sys_writen(int fd, const void* vptr, int n) {
-  int nleft;
-  int nwritten;
-  const char* ptr;
-
-  ptr = (const char*)vptr;
-  nleft = n;
-  while (nleft > 0) {
-    if ((nwritten = write(fd, ptr, nleft)) <= 0) {
-      if (nwritten < 0 && errno == EINTR)
-        nwritten = 0; /* and call write() again */
-      else
-        return (-1); /* error */
-    }
-
-    nleft -= nwritten;
-    ptr += nwritten;
-  }
-
-  return n;
-}
-
 int tcp_open(const char* ipaddr, int port) {
   int sockfd;
   const char* isIpV6 = strchr(ipaddr, ':');
