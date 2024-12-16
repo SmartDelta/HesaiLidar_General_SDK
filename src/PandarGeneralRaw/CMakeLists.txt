@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 2.8)
 project(PandarGeneral)
 
 
-find_package( Boost REQUIRED )
+find_package( Boost REQUIRED COMPONENTS exception )
 find_package( Eigen3 REQUIRED )
 find_package(PCL REQUIRED COMPONENTS common)
 
-set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
+endif()
 
 add_library( ${PROJECT_NAME}
 	src/input.cc

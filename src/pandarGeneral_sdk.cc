@@ -173,9 +173,11 @@ void PandarGeneralSDK::GetCalibrationFromDevice() {
 int PandarGeneralSDK::getMajorVersion() {
   if (pandarGeneral_)
     return pandarGeneral_->getMajorVersion();
+  return 0;
 }
 
 int PandarGeneralSDK::getMinorVersion() {
   if (pandarGeneral_)
     return pandarGeneral_->getMinorVersion();
+  return 0;
 }

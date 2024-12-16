@@ -17,11 +17,13 @@ pkg_check_modules( PCAP REQUIRED libpcap )
 
 # set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-fPIC --std=c++14")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS "-fPIC --std=c++14")
+endif()
 
 add_subdirectory(src/PandarGeneralRaw)
 
-add_library( ${PROJECT_NAME} SHARED
+add_library( ${PROJECT_NAME}
     src/pandarGeneral_sdk.cc
     src/tcp_command_client.c
     "src/utils.cpp"
