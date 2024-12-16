@@ -90,16 +90,19 @@ void PandarGeneral::Stop() { internal_->Stop(); }
 int PandarGeneral::getMajorVersion() {
   if (internal_)
     return internal_->getMajorVersion();
+  return 0;
 }
 
 int PandarGeneral::getMinorVersion() {
   if (internal_)
     return internal_->getMinorVersion();
+  return 0;
 }
 
 bool PandarGeneral::GetCorrectionFileFlag(){
   if (internal_)
     return internal_->GetCorrectionFileFlag();
+  return 0;
 }
 
 void PandarGeneral::SetCorrectionFileFlag(bool flag){

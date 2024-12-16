@@ -1936,6 +1936,7 @@ void PandarGeneral_Internal::initOffsetByProtocolVersion() {
 void PandarGeneral_Internal::pushAlgorithmData(PandarPacket packet) {
     unique_lock<mutex> lock(this->mtx_algorithm);
     m_listAlgorithmPacket.push_back(packet);
+    lock.unlock();
     this->cvar_algorithm.notify_all();
 }
 
