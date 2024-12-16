@@ -258,7 +258,7 @@ int Input::getPacket(PandarPacket *pkt) {
   }
 
   senderAddressLen = sizeof(senderAddress);
-  SSIZE_T nbytes;
+  ssize_t nbytes;
   double time = getNowTimeSec();
   // printf("Real time: %lf\n",time);
   for (int i = 0; i != socketNumber; ++i) {

@@ -23,7 +23,7 @@ endif()
 
 add_subdirectory(src/PandarGeneralRaw)
 
-add_library( ${PROJECT_NAME}
+add_library( ${PROJECT_NAME} SHARED
     src/pandarGeneral_sdk.cc
     src/tcp_command_client.c
     "src/utils.cpp"
@@ -62,19 +62,5 @@ target_include_directories(${PROJECT_NAME}
     ${PCL_INCLUDE_DIRS}
     ${PCAP_INCLUDE_DIRS}
 )
-
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-    find_package(PCL REQUIRED)
-    add_executable(PandarGeneralTest
-        test/test.cc
-    )
-
-    target_link_libraries(PandarGeneralTest
-        ${PROJECT_NAME}
-        ${Boost_LIBRARIES}
-        ${PCL_IO_LIBRARIES}
-        Boost::thread
-    )
-endif(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
 
 install(TARGETS ${PROJECT_NAME})

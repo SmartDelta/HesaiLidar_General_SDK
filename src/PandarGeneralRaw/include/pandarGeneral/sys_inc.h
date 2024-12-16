@@ -11,6 +11,8 @@
 
 #include <basetsd.h>
 
+typedef SSIZE_T ssize_t;
+
 #else
 
 #include <sys/types.h>
@@ -19,6 +21,15 @@
 #include <arpa/inet.h>
 #include <unistd.h> // Voor close()
 #include <netdb.h> // Voor getaddrinfo()
+#include <poll.h>
+
+#ifndef SOCKET_ERROR
+#define SOCKET_ERROR -1
+#endif
+
+#ifndef INVALID_SOCKET
+#define INVALID_SOCKET -1
+#endif
 
 #endif
 

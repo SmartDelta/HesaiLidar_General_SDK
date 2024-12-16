@@ -10,7 +10,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
 endif()
 
-add_library( ${PROJECT_NAME}
+add_library( ${PROJECT_NAME} STATIC
 	src/input.cc
 	src/pandarGeneral_internal.cc
 	src/pandarGeneral.cc

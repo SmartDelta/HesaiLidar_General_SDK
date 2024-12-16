@@ -1942,7 +1942,8 @@ void PandarGeneral_Internal::pushAlgorithmData(PandarPacket packet) {
 
 int PandarGeneral_Internal::popAlgorithmData(PandarPacket *packet) {
     unique_lock<mutex> lock(this->mtx_algorithm);
-    if (this->cvar_algorithm.wait_for(lock, std::chrono::seconds(1)) == std::cv_status::timeout)
+    std::cv_status wait_res = this->cvar_algorithm.wait_for(lock, std::chrono::seconds(1));
+    if (wait_res == std::cv_status::timeout)
         return -1;
     *packet = m_listAlgorithmPacket.front();
     m_listAlgorithmPacket.pop_front();
