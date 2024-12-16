@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 project(PandarGeneralSDK)
 
 find_package( Boost REQUIRED  COMPONENTS thread)
