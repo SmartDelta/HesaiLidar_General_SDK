@@ -1945,6 +1945,8 @@ int PandarGeneral_Internal::popAlgorithmData(PandarPacket *packet) {
     std::cv_status wait_res = this->cvar_algorithm.wait_for(lock, std::chrono::seconds(1));
     if (wait_res == std::cv_status::timeout)
         return -1;
+    if (m_listAlgorithmPacket.empty())
+        return -1;
     *packet = m_listAlgorithmPacket.front();
     m_listAlgorithmPacket.pop_front();
     return 0;
