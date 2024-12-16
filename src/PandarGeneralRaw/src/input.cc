@@ -31,6 +31,12 @@
 #include "input.h"
 #include "log.h"
 
+#ifdef _WIN32
+
+#else
+#define closesocket close
+#endif
+
 Input::Input(std::string deviceipaddr,uint16_t port, uint16_t gpsPort, std::string multicast_ip) {
   // LOG_D("port: %d, gpsPort: %d", port,gpsPort);
   socketForLidar = -1;
@@ -195,8 +201,8 @@ Input::Input(std::string deviceipaddr,uint16_t port, uint16_t gpsPort, std::stri
 }
 
 Input::~Input(void) {
-  if (socketForGPS > 0) close(socketForGPS);
-  if (socketForLidar > 0) (void)close(socketForLidar);
+  if (socketForGPS > 0) closesocket(socketForGPS);
+  if (socketForLidar > 0) (void)closesocket(socketForLidar);
 }
 
 // return : 0 - lidar

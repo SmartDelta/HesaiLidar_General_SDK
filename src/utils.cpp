@@ -31,6 +31,12 @@
 
 #include <chrono>
 
+#ifdef _WIN32
+
+#else
+#define closesocket close
+#endif
+
 #define DEFAULT_TIMEOUT 10 /*secondes waitting for read/write*/
 
 int sys_readn(int fd, void* vptr, int n) {
@@ -38,7 +44,7 @@ int sys_readn(int fd, void* vptr, int n) {
   int nleft, nread;
   char* ptr;
 
-  ptr = vptr;
+  ptr = (char*)vptr;
   nleft = n;
   while (nleft > 0) {
     // printf("start read\n");
@@ -64,7 +70,7 @@ int sys_writen(int fd, const void* vptr, int n) {
   int nwritten;
   const char* ptr;
 
-  ptr = vptr;
+  ptr = (const char*)vptr;
   nleft = n;
   while (nleft > 0) {
     if ((nwritten = write(fd, ptr, nleft)) <= 0) {
@@ -88,16 +94,16 @@ int tcp_open(const char* ipaddr, int port) {
     struct sockaddr_in servaddr;
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) return -1;
 
-    bzero(&servaddr, sizeof(servaddr));
+    memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(port);
     if (inet_pton(AF_INET, ipaddr, &servaddr.sin_addr) <= 0) {
-      close(sockfd);
+      closesocket(sockfd);
       return -1;
     }
 
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1) {
-      close(sockfd);
+      closesocket(sockfd);
       return -1;
     }
     printf("open !!!!!\n");
@@ -110,12 +116,12 @@ int tcp_open(const char* ipaddr, int port) {
     memset(&addr, 0, sizeof(addr));
     addr.sin6_family = AF_INET6;
     if (!inet_pton(AF_INET6, ipaddr, &(addr.sin6_addr))) {
-      close(sockfd);
+      closesocket(sockfd);
       return -1;
     }
     addr.sin6_port = htons(port);
-    if (connect(sockfd, (struct sockaddr_in6*)&addr, sizeof(addr)) == -1) {
-      close(sockfd);
+    if (connect(sockfd, (const sockaddr*)&addr, sizeof(addr)) == -1) {
+      closesocket(sockfd);
       return -1;
     }
     return sockfd;
