@@ -6,6 +6,13 @@ find_package( PCL REQUIRED COMPONENTS common )
 find_package( PkgConfig REQUIRED )
 find_package( yaml-cpp REQUIRED )
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package( Threads REQUIRED )
+
+if(WIN32)
+    find_package(PThreads4W REQUIRED)
+endif()
+
 pkg_check_modules( PCAP REQUIRED libpcap )
 
 # set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
@@ -29,7 +36,12 @@ target_link_libraries(${PROJECT_NAME}
     Boost::thread
     ${PCAP_LIBRARIES}
     yaml-cpp
+    Threads::Threads
 )
+
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PUBLIC PThreads4W::PThreads4W)
+endif()
 
 target_link_directories(${PROJECT_NAME}
     PUBLIC
