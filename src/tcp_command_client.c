@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+
+#include "sys_inc.h"
 #include "src/util.h"
 #include "src/tcp_command_client.h"
 
