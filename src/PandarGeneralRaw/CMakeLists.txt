@@ -6,7 +6,8 @@ find_package( Boost REQUIRED )
 find_package( Eigen3 REQUIRED )
 find_package(PCL REQUIRED COMPONENTS common)
 
-set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
+include_directories(${PCL_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
 
 add_library( ${PROJECT_NAME}
 	src/input.cc
@@ -15,13 +16,15 @@ add_library( ${PROJECT_NAME}
     src/pcap_reader.cpp
 )
 
-target_include_directories(${PROJECT_NAME}
-	PUBLIC
-	.
+set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${PCL_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}
 	include
 	include/pandarGeneral
-	${Boost_INCLUDE_DIRS}
-	${PCL_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -31,7 +34,6 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 if(TARGET Eigen3::Eigen)
-	target_include_directories(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 	target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 else()
 	target_include_directories(${PROJECT_NAME} PUBLIC ${EIGEN3_INCLUDE_DIRS})

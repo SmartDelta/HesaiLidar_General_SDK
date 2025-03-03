@@ -8,10 +8,6 @@ find_package( yaml-cpp REQUIRED )
 
 pkg_check_modules( PCAP REQUIRED libpcap )
 
-# set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-fPIC --std=c++14")
-
 add_subdirectory(src/PandarGeneralRaw)
 
 add_library( ${PROJECT_NAME} SHARED
@@ -20,6 +16,8 @@ add_library( ${PROJECT_NAME} SHARED
     src/util.c
     src/wrapper.cc
 )
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(${PROJECT_NAME}
 	PUBLIC
@@ -41,26 +39,12 @@ target_link_directories(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC
-	.
+	${CMAKE_CURRENT_SOURCE_DIR}
     include
     src/PandarGeneralRaw/include
     ${Boost_INCLUDE_DIRS}
     ${PCL_INCLUDE_DIRS}
     ${PCAP_INCLUDE_DIRS}
 )
-
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-    find_package(PCL REQUIRED)
-    add_executable(PandarGeneralTest
-        test/test.cc
-    )
-
-    target_link_libraries(PandarGeneralTest
-        ${PROJECT_NAME}
-        ${Boost_LIBRARIES}
-        ${PCL_IO_LIBRARIES}
-        Boost::thread
-    )
-endif(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
 
 install(TARGETS ${PROJECT_NAME})
