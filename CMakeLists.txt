@@ -18,12 +18,6 @@ endif()
 
 pkg_check_modules( PCAP REQUIRED libpcap )
 
-# set (CMAKE_CXX_FLAGS "-fPIC --std=c++11")
-set(CMAKE_CXX_STANDARD 17)
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "-fPIC --std=c++14")
-endif()
-
 add_subdirectory(src/PandarGeneralRaw)
 
 add_library( ${PROJECT_NAME} SHARED
@@ -32,6 +26,8 @@ add_library( ${PROJECT_NAME} SHARED
     "src/utils.cpp"
     src/wrapper.cc
 )
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(${PROJECT_NAME}
 	PUBLIC
@@ -58,7 +54,7 @@ target_link_directories(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC
-	.
+	${CMAKE_CURRENT_SOURCE_DIR}
     include
     src/PandarGeneralRaw/include
     ${Boost_INCLUDE_DIRS}
