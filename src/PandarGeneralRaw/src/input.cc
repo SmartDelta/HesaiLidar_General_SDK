@@ -29,7 +29,6 @@
 #include "sys_inc.h"
 
 #include "input.h"
-#include "log.h"
 
 #ifdef _WIN32
 #define poll WSAPoll

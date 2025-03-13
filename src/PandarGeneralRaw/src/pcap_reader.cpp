@@ -1,5 +1,4 @@
 #include "pcap_reader.h"
-#include "log.h"
 #include "../util.h"
 
 #include <map>

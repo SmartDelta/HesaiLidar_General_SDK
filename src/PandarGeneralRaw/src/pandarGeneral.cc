@@ -16,7 +16,6 @@
 
 #include "pandarGeneral.h"
 #include "pandarGeneral_internal.h"
-#include "log.h"
 /**
  * @brief Constructor
  * @param device_ip         The ip of the device

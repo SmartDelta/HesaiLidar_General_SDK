@@ -17,7 +17,6 @@
 #include "pandarGeneral_sdk/pandarGeneral_sdk.h"
 #include "src/tcp_command_client.h"
 #include "yaml-cpp/yaml.h"
-#include "log.h"
 #include "version.h"
 #include <fstream>
 
