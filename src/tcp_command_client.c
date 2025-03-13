@@ -41,18 +41,6 @@ typedef struct TcpCommandClient_s {
   int fd;
 } TcpCommandClient;
 
-#ifdef DEBUG
-static void print_mem(char* mem, int len) {
-  int i = 0;
-  for (int i = 0; i < len; ++i) {
-    printf("%02x ", mem[i]);
-  }
-  printf("\n");
-}
-#else
-static void print_mem(char* mem, int len) {}
-#endif
-
 static int tcpCommandHeaderParser(unsigned char* buffer, int len,
                                   TcpCommandHeader* header) {
   printf("tcpCommandHeaderParser\n");
@@ -85,8 +73,6 @@ static int tcpCommandReadCommand(int connfd, TC_Command* cmd) {
     return -1;
   }
 
-  print_mem(buffer, 8);
-
   tcpCommandHeaderParser(buffer + 2, 6, &cmd->header);
 
   if (cmd->header.len > 0) {
@@ -105,8 +91,6 @@ static int tcpCommandReadCommand(int connfd, TC_Command* cmd) {
   }
 
   // cmd->ret_size = cmd->header.len;
-
-  print_mem(cmd->data, cmd->header.len);
 
   return 0;
 }
@@ -152,7 +136,6 @@ static PTC_ErrCode tcpCommandClient_SendCmd(TcpCommandClient* client,
   unsigned char buffer[128];
   int size = TcpCommand_buildHeader(buffer, cmd);
 
-  print_mem(buffer, size);
   int ret = write(fd, buffer, size);
   if (ret != size) {
     close(fd);
@@ -162,7 +145,6 @@ static PTC_ErrCode tcpCommandClient_SendCmd(TcpCommandClient* client,
   }
 
   if (cmd->header.len > 0 && cmd->data) {
-    print_mem(cmd->data, cmd->header.len);
     ret = write(fd, cmd->data, cmd->header.len);
     if (ret != cmd->header.len) {
       printf("Write Payload error\n");
@@ -249,7 +231,7 @@ PTC_ErrCode TcpCommandSetCalibration(const void* handle, const char* buffer,
 
 PTC_ErrCode TcpCommandGetCalibration(const void* handle, char** buffer,
                                      unsigned int* len) {
-  printf("buffer is: %s,len is: %d\n",buffer,len);
+
   if (!handle || !buffer || !len) {
     printf("Bad Parameter!!!\n");
     return PTC_ERROR_BAD_PARAMETER;
@@ -280,7 +262,7 @@ PTC_ErrCode TcpCommandGetCalibration(const void* handle, char** buffer,
 }
 PTC_ErrCode TcpCommandGetLidarCalibration(const void* handle, char** buffer,
                                           unsigned int* len) {
-  printf("buffer is: %s,len is: %d\n",buffer,len);
+
   if (!handle || !buffer || !len) {
     printf("Bad Parameter!!!\n");
     return PTC_ERROR_BAD_PARAMETER;
