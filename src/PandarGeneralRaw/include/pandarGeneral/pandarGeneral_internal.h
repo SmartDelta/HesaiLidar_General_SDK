@@ -429,7 +429,8 @@ class PandarGeneral_Internal {
   PandarGeneral_Internal(
       std::string pcap_path, \
       boost::function<void(boost::shared_ptr<PPointCloud>, double)> \
-      pcl_callback, uint16_t start_angle, int tz, int pcl_type, \
+      pcl_callback, boost::function<void(HS_Object3D_Object_List*)> algorithm_callback,
+      boost::function<void(double)> gps_callback, uint16_t start_angle, int tz, int pcl_type, \
       std::string lidar_type, std::string frame_id, std::string timestampType, bool coordinate_correction_flag);// the default timestamp type is LiDAR time
   ~PandarGeneral_Internal();
 
@@ -535,25 +536,26 @@ class PandarGeneral_Internal {
 
   void EmitBackMessege(char chLaserNumber, boost::shared_ptr<PPointCloud> cld);
   void SetEnvironmentVariableTZ();
-  boost::thread *lidar_recv_thr_;
-  boost::thread *lidar_process_thr_;
-  bool enable_lidar_recv_thr_;
-  bool enable_lidar_process_thr_;
-  int start_angle_;
+
+  boost::thread *lidar_recv_thr_ = nullptr;
+  boost::thread *lidar_process_thr_ = nullptr;
+  bool enable_lidar_recv_thr_ = false;
+  bool enable_lidar_process_thr_ = false;
+  int start_angle_ = 0;
   std::string m_sTimestampType;
-  double m_dPktTimestamp;
-  uint16_t m_u16LidarAlgorithmPort;
+  double m_dPktTimestamp = 0.0;
+  uint16_t m_u16LidarAlgorithmPort = 0;
   std::mutex mtx_algorithm;
   std::condition_variable cvar_algorithm;
-  boost::thread *m_threadLidarAlgorithmRecv;
-  boost::thread *m_threadLidarAlgorithmProcess;
-  bool m_bEnableLidarAlgorithmRecvThread;
-  bool m_bEnableLidarAlgorithmProcessThread;
-  bool m_bGetVersion;
-  int m_iMajorVersion;
-  int m_iMinorVersion;
-  int m_iHeaderSize;
-  int m_iRegularInfoLen;
+  boost::thread *m_threadLidarAlgorithmRecv = nullptr;
+  boost::thread *m_threadLidarAlgorithmProcess = nullptr;
+  bool m_bEnableLidarAlgorithmRecvThread = false;
+  bool m_bEnableLidarAlgorithmProcessThread = false;
+  bool m_bGetVersion = false;
+  int m_iMajorVersion = 0;
+  int m_iMinorVersion = 0;
+  int m_iHeaderSize = 0;
+  int m_iRegularInfoLen = 0;
   std::list<PandarPacket> m_listAlgorithmPacket;
   boost::shared_ptr<Input> m_spAlgorithmPktInput;
   boost::function<void(HS_Object3D_Object_List*)> m_fAlgorithmCallback;
@@ -565,54 +567,54 @@ class PandarGeneral_Internal {
       pcl_callback_;
   boost::function<void(double timestamp)> gps_callback_;
 
-  float sin_lookup_table_[ROTATION_MAX_UNITS];
-  float cos_lookup_table_[ROTATION_MAX_UNITS];
+  float sin_lookup_table_[ROTATION_MAX_UNITS]{};
+  float cos_lookup_table_[ROTATION_MAX_UNITS]{};
 
-  uint16_t last_azimuth_;
-  double last_timestamp_;
+  uint16_t last_azimuth_ = 0;
+  double last_timestamp_ = 0.0;
 
-  float elev_angle_map_[LASER_COUNT];
-  float horizatal_azimuth_offset_map_[LASER_COUNT];
+  float elev_angle_map_[LASER_COUNT]{};
+  float horizatal_azimuth_offset_map_[LASER_COUNT]{};
 
-  float General_elev_angle_map_[MAX_LASER_NUM];
-  float General_horizatal_azimuth_offset_map_[MAX_LASER_NUM];
+  float General_elev_angle_map_[MAX_LASER_NUM]{};
+  float General_horizatal_azimuth_offset_map_[MAX_LASER_NUM]{};
 
-  float Pandar20_elev_angle_map_[HS_LIDAR_L20_UNIT_NUM];
-  float Pandar20_horizatal_azimuth_offset_map_[HS_LIDAR_L20_UNIT_NUM];
+  float Pandar20_elev_angle_map_[HS_LIDAR_L20_UNIT_NUM]{};
+  float Pandar20_horizatal_azimuth_offset_map_[HS_LIDAR_L20_UNIT_NUM]{};
 
-  float PandarQT_elev_angle_map_[HS_LIDAR_QT_UNIT_NUM];
-  float PandarQT_horizatal_azimuth_offset_map_[HS_LIDAR_QT_UNIT_NUM];
+  float PandarQT_elev_angle_map_[HS_LIDAR_QT_UNIT_NUM]{};
+  float PandarQT_horizatal_azimuth_offset_map_[HS_LIDAR_QT_UNIT_NUM]{};
 
-  float PandarXT_elev_angle_map_[HS_LIDAR_XT_UNIT_NUM];
-  float PandarXT_horizatal_azimuth_offset_map_[HS_LIDAR_XT_UNIT_NUM];
+  float PandarXT_elev_angle_map_[HS_LIDAR_XT_UNIT_NUM]{};
+  float PandarXT_horizatal_azimuth_offset_map_[HS_LIDAR_XT_UNIT_NUM]{};
 
-  float block64OffsetSingle_[HS_LIDAR_L64_BLOCK_NUMBER_6];
-  float block64OffsetDual_[HS_LIDAR_L64_BLOCK_NUMBER_6];
-  float laser64Offset_[HS_LIDAR_L64_UNIT_NUM];
+  float block64OffsetSingle_[HS_LIDAR_L64_BLOCK_NUMBER_6]{};
+  float block64OffsetDual_[HS_LIDAR_L64_BLOCK_NUMBER_6]{};
+  float laser64Offset_[HS_LIDAR_L64_UNIT_NUM]{};
 
-  float block40OffsetSingle_[BLOCKS_PER_PACKET];
-  float block40OffsetDual_[BLOCKS_PER_PACKET];
-  float laser40Offset_[LASER_COUNT];
+  float block40OffsetSingle_[BLOCKS_PER_PACKET]{};
+  float block40OffsetDual_[BLOCKS_PER_PACKET]{};
+  float laser40Offset_[LASER_COUNT]{};
 
-  float block20OffsetSingle_[HS_LIDAR_L20_BLOCK_NUMBER];
-  float block20OffsetDual_[HS_LIDAR_L20_BLOCK_NUMBER];
-  float laser20AOffset_[HS_LIDAR_L20_UNIT_NUM];
-  float laser20BOffset_[HS_LIDAR_L20_UNIT_NUM];
+  float block20OffsetSingle_[HS_LIDAR_L20_BLOCK_NUMBER]{};
+  float block20OffsetDual_[HS_LIDAR_L20_BLOCK_NUMBER]{};
+  float laser20AOffset_[HS_LIDAR_L20_UNIT_NUM]{};
+  float laser20BOffset_[HS_LIDAR_L20_UNIT_NUM]{};
 
-  float blockQTOffsetSingle_[HS_LIDAR_QT_BLOCK_NUMBER];
-  float blockQTOffsetDual_[HS_LIDAR_QT_BLOCK_NUMBER];
-  float laserQTOffset_[HS_LIDAR_QT_UNIT_NUM];
+  float blockQTOffsetSingle_[HS_LIDAR_QT_BLOCK_NUMBER]{};
+  float blockQTOffsetDual_[HS_LIDAR_QT_BLOCK_NUMBER]{};
+  float laserQTOffset_[HS_LIDAR_QT_UNIT_NUM]{};
 
-  float blockXTOffsetSingle_[HS_LIDAR_XT_BLOCK_NUMBER];
-  float blockXTOffsetDual_[HS_LIDAR_XT_BLOCK_NUMBER];
-  float blockXTOffsetTriple_[HS_LIDAR_XT_BLOCK_NUMBER];
-  float laserXTOffset_[HS_LIDAR_XT_UNIT_NUM];
+  float blockXTOffsetSingle_[HS_LIDAR_XT_BLOCK_NUMBER]{};
+  float blockXTOffsetDual_[HS_LIDAR_XT_BLOCK_NUMBER]{};
+  float blockXTOffsetTriple_[HS_LIDAR_XT_BLOCK_NUMBER]{};
+  float laserXTOffset_[HS_LIDAR_XT_UNIT_NUM]{};
 
-  int tz_second_;
+  int tz_second_ = 0;
   std::string frame_id_;
-  int pcl_type_;
-  PcapReader *pcap_reader_;
-  bool connect_lidar_;
+  int pcl_type_ = 0;
+  PcapReader *pcap_reader_ = nullptr;
+  bool connect_lidar_ = false;
   std::string m_sLidarType;
   std::vector<float> m_sin_azimuth_map_;
   std::vector<float> m_cos_azimuth_map_;
@@ -622,12 +624,12 @@ class PandarGeneral_Internal {
   std::vector<float> m_cos_azimuth_map_h;
   std::vector<float> m_sin_azimuth_map_b;
   std::vector<float> m_cos_azimuth_map_b;
-  bool got_lidar_correction_flag;
+  bool got_lidar_correction_flag = false;
   std::string correction_file_path_;
   PacketsBuffer m_PacketsBuffer;
-  bool m_bCoordinateCorrectionFlag;
-  uint16_t m_iAzimuthRange;
-  int m_iPointCloudIndex;
+  bool m_bCoordinateCorrectionFlag = false;
+  uint16_t m_iAzimuthRange = 0;
+  int m_iPointCloudIndex = 0;
   std::vector<std::vector<PPoint> > m_vPointCloudList;
   std::vector<PPoint> m_vPointCloud;
 

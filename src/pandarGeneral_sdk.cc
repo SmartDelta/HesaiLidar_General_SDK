@@ -50,12 +50,14 @@ PandarGeneralSDK::PandarGeneralSDK(
 PandarGeneralSDK::PandarGeneralSDK(\
     std::string pcap_path, \
     boost::function<void(boost::shared_ptr<PPointCloud>, double)> pcl_callback, \
+    boost::function<void(HS_Object3D_Object_List*)> algorithm_callback,
+    boost::function<void(double)> gps_callback,
     uint16_t start_angle, int tz, int pcl_type, std::string lidar_type, std::string frame_id, \
     std::string timestampType, bool coordinate_correction_flag) {
   printVersion();
   pandarGeneral_ = NULL;
 
-  pandarGeneral_ = new PandarGeneral(pcap_path, pcl_callback, start_angle, \
+  pandarGeneral_ = new PandarGeneral(pcap_path, pcl_callback, algorithm_callback, gps_callback, start_angle, \
       tz, pcl_type, lidar_type, frame_id, timestampType, coordinate_correction_flag);
 
   get_calibration_thr_ = NULL;

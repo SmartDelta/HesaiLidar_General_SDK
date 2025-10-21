@@ -76,7 +76,7 @@ void PcapReader::parsePcap() {
   struct tm t = {0};
   static int gap = 100;
   int64_t last_pkt_ts = 0;
-  int count;
+  int count = 0;
   int64_t last_time;
   int64_t current_time;
   int64_t pkt_ts = 0;

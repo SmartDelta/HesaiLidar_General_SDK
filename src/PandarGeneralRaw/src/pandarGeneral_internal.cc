@@ -136,7 +136,8 @@ PandarGeneral_Internal::PandarGeneral_Internal(
 
 PandarGeneral_Internal::PandarGeneral_Internal(std::string pcap_path, \
     boost::function<void(boost::shared_ptr<PPointCloud>, double)> \
-    pcl_callback, uint16_t start_angle, int tz, int pcl_type, \
+    pcl_callback, boost::function<void(HS_Object3D_Object_List*)> algorithm_callback,
+    boost::function<void(double)> gps_callback, uint16_t start_angle, int tz, int pcl_type, \
     std::string lidar_type, std::string frame_id, \
     std::string timestampType, bool coordinate_correction_flag) {
 
@@ -150,7 +151,8 @@ PandarGeneral_Internal::PandarGeneral_Internal(std::string pcap_path, \
 
   start_angle_ = start_angle;
   pcl_callback_ = pcl_callback;
-  gps_callback_ = NULL;
+  gps_callback_ = gps_callback;
+ 
   last_azimuth_ = 0;
   last_timestamp_ = 0;
   m_sLidarType = lidar_type;
@@ -162,6 +164,10 @@ PandarGeneral_Internal::PandarGeneral_Internal(std::string pcap_path, \
   m_iAzimuthRange = MAX_AZIMUTH_DEGREE_NUM;
   m_dPktTimestamp = 0.0f;
   m_bCoordinateCorrectionFlag = coordinate_correction_flag;
+
+  if (NULL != algorithm_callback) {
+      m_fAlgorithmCallback = algorithm_callback;
+  }
 
   Init();
 }
