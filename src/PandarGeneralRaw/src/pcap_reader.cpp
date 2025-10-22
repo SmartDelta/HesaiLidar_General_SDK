@@ -3,6 +3,8 @@
 
 #include <map>
 #include <chrono>
+#include <thread>
+
 #include <time.h>
 
 #define IPV4_PKT_HEADER_SIZE (42)
@@ -158,17 +160,8 @@ void PcapReader::parsePcap() {
         // LOG_D("[%lld],[%lld],[%lld],[%lld]",pkt_ts,last_pkt_ts,current_time,last_time);
         // LOG_D("sleep time is: [%lld]", sleep_time);
 
-        if (sleep_time > 0) {
-          struct timeval waitTime;
-          waitTime.tv_sec = sleep_time / 1000000;
-          waitTime.tv_usec = sleep_time % 1000000;
-
-          int err;
-
-          do {
-            err = select(0, NULL, NULL, NULL, &waitTime);
-          } while (err < 0 && errno != EINTR);
-        }
+        if (sleep_time > 0)
+            this_thread::sleep_for(chrono::microseconds(sleep_time));
 
         last_pkt_ts = pkt_ts;
         last_time = current_time;
