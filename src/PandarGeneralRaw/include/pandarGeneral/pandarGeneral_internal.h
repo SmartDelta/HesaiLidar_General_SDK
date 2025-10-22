@@ -344,20 +344,28 @@ typedef struct {
 
 typedef std::array<PandarPacket, 36000> PktArray;
 
-typedef struct PacketsBuffer_s {
-  PktArray m_buffers{};
-  PktArray::iterator m_iterPush;
-  PktArray::iterator m_iterCalc;
-  bool m_startFlag;
+typedef class PacketsBuffer_s {
+  
+public:
+
+    PktArray m_buffers{};
+    PktArray::iterator m_iterPush;
+    PktArray::iterator m_iterCalc;
+    
+    bool m_startFlag = false;
+    bool m_active = true;
+
   inline PacketsBuffer_s() {
     m_iterPush = m_buffers.begin();
     m_iterCalc = m_buffers.begin();
     m_startFlag = false;
+    m_active = true;
   }
   inline int push_back(PandarPacket pkt) {
     if (!m_startFlag) {
       *m_iterPush = pkt;
       m_startFlag = true;
+      m_active = true;
       return 1;
     } 
     m_iterPush++;
@@ -369,7 +377,7 @@ typedef struct PacketsBuffer_s {
     if(((m_iterPush - m_iterCalc) > MAX_ITERATOR_DIFF) ||
     ((m_iterPush < m_iterCalc) && (m_iterCalc - m_iterPush) < m_buffers.size() - MAX_ITERATOR_DIFF)){
 
-        while ((((m_iterPush - m_iterCalc) > MAX_ITERATOR_DIFF) ||
+        while (m_active && (((m_iterPush - m_iterCalc) > MAX_ITERATOR_DIFF) ||
             ((m_iterPush < m_iterCalc) && (m_iterCalc - m_iterPush) < m_buffers.size() - MAX_ITERATOR_DIFF)))
             std::this_thread::sleep_for(std::chrono::microseconds(1000));
           //usleep(1000);

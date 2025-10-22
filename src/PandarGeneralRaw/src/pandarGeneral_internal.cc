@@ -690,6 +690,11 @@ void PandarGeneral_Internal::Stop() {
   m_bEnableLidarAlgorithmRecvThread = false;
   m_bEnableLidarAlgorithmProcessThread = false;
 
+  if (pcap_reader_ != NULL) {
+      this->m_PacketsBuffer.m_active = false;
+      pcap_reader_->stop();
+  }
+
   if (lidar_process_thr_) {
     lidar_process_thr_->interrupt();
     lidar_process_thr_->join();
@@ -702,10 +707,6 @@ void PandarGeneral_Internal::Stop() {
     lidar_recv_thr_->join();
     delete lidar_recv_thr_;
     lidar_recv_thr_ = NULL;
-  }
-
-  if (pcap_reader_ != NULL) {
-    pcap_reader_->stop();
   }
 
   if(m_bEnableLidarAlgorithmRecvThread) {
