@@ -2071,11 +2071,8 @@ void PandarGeneral_Internal::SetEnvironmentVariableTZ(){
   t2 = mktime(tm_utc);
   timezone = 0;
   std::string data = "TZ=UTC" + std::to_string(timezone);
-  int len = data.length();
-  TZ = (char *)malloc((len + 1) * sizeof(char));
-  data.copy(TZ, len, 0); 
-  if(putenv(TZ) == 0){
-    printf("set environment %s\n", TZ);
+  if(putenv(data.c_str()) == 0){
+    printf("set environment %s\n", data.c_str());
   }
   else{
     printf("set environment fail\n");
