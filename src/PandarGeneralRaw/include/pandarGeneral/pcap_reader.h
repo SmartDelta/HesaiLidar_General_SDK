@@ -30,6 +30,7 @@ public:
   void stop();
 
 private:
+
   bool          loop;
   boost::thread *parse_thr_;
   std::string   pcapPath;
@@ -39,6 +40,10 @@ private:
   int m_iTsIndex;
   int m_iUTCIndex;
 
+  // May want to make it configurable some time but we don't need this yet
+  bool cfg_sync_on_clock = false;
+
   void parsePcap();
   void initTimeIndexMap();
+
 };

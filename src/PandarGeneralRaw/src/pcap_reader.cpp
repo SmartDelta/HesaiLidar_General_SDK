@@ -160,7 +160,7 @@ void PcapReader::parsePcap() {
         // LOG_D("[%lld],[%lld],[%lld],[%lld]",pkt_ts,last_pkt_ts,current_time,last_time);
         // LOG_D("sleep time is: [%lld]", sleep_time);
 
-        if (sleep_time > 0)
+        if (cfg_sync_on_clock && sleep_time > 0)
             this_thread::sleep_for(chrono::microseconds(sleep_time));
 
         last_pkt_ts = pkt_ts;
